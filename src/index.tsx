@@ -5,11 +5,12 @@ import { Fragment } from 'react';
 
 export const GlobalStyle = createGlobalStyle`
   [data-color-mode*='dark'], [data-color-mode*='dark'] body {
-    --color-theme-bg: #282c34 !important;
-    --color-json-bg: #2c303b;
+    --color-border-default: #21262d;
+    --color-label-bg: #333;
   }
   [data-color-mode*='light'], [data-color-mode*='light'] body {
-    --color-json-bg: #f4f4f4 !important;
+    --color-border-default: #d0d7de;
+    --color-label-bg: #ededed;
   }
   body {
     margin: 0;

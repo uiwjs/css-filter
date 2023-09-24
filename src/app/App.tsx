@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import GitHubCorners from '@uiw/react-github-corners';
 import '@wcj/dark-mode';
 import styled from 'styled-components';
@@ -10,35 +10,37 @@ const Wrapper = styled.main`
   text-align: center;
 `;
 
-const Header = styled.header`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 6rem;
-`;
-
 const Title = styled.h1`
+  margin: 0;
   font-weight: 900;
-  font-size: 4rem;
+  font-size: 18px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji';
-  margin-top: 4rem;
+  height: 42px;
+  border-bottom: 1px solid var(--color-border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Divider = styled.div`
+  border-bottom: 1px solid var(--color-border-default);
 `;
 
 const Input = styled.input`
   padding: 10px 10px;
-  min-width: 320px;
+  min-width: 100%;
 `;
 
 const InputRange = styled.input`
-  min-width: 320px;
+  flex: 1;
 `;
 
 const Label = styled.label`
-  margin-top: 1rem;
   display: flex;
+  background: var(--color-label-bg, #333);
+  padding: 5px 5px;
+  border-radius: 3px;
   > span {
     width: 90px;
     text-align: right;
@@ -46,9 +48,10 @@ const Label = styled.label`
 `;
 
 const ImageWrapper = styled.div`
-  border-radius: 0.25rem;
-  margin-inline: 1rem;
-  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
 `;
 
 type ImageProps = {
@@ -60,6 +63,26 @@ const Image = styled.img<ImageProps>`
   filter: ${({ $filter }) => $filter};
 `;
 
+const Main = styled.main`
+  height: calc(100vh - 42px);
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  overflow: hidden;
+`;
+
+const Aside = styled.aside`
+  border-right: 1px solid var(--color-border-default);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: auto;
+`;
+const Article = styled.article`
+  overflow: auto;
+  padding: 1rem;
+`;
+
 interface Filter {
   blur?: number;
   grayscale?: number;
@@ -69,6 +92,7 @@ interface Filter {
   saturate?: number;
   opacity?: number;
   invert?: number;
+  theme?: 'light' | 'dark';
 }
 
 function reducer(state: Filter, action: Filter): Filter {
@@ -87,6 +111,17 @@ const App = () => {
     invert: 0,
   });
   const [imgSrc, setImgSrc] = useState(img);
+  useEffect(() => {
+    document.addEventListener('colorschemechange', (evn) => {
+      dispatch({
+        theme: evn.detail.colorScheme === 'dark' ? 'dark' : 'light',
+      });
+    });
+    dispatch({
+      theme: document.documentElement.dataset.colorMode === 'dark' ? 'dark' : 'light',
+    });
+  }, []);
+
   const filters = [
     state.blur !== 0 ? `blur(${state.blur}px)` : '',
     state.grayscale !== 0 ? `grayscale(${state.grayscale}%)` : '',
@@ -97,7 +132,7 @@ const App = () => {
     state.opacity !== 100 ? `opacity(${state.opacity}%)` : '',
     state.invert !== 0 ? `invert(${state.invert}%)` : '',
   ].filter(Boolean);
-  const filterCSS = filters.length ? `img {\n  filter: ${filters.join(' ')};\n}` : '';
+  const filterCSS = filters.length ? `img {\n   filter: ${filters.join('\n       ')};\n}` : '';
   const labels = [
     {
       type: 'range',
@@ -190,31 +225,37 @@ const App = () => {
   ];
   return (
     <Wrapper>
-      <dark-mode permanent light="Light" dark="Dart" style={{ position: 'fixed', top: '6px', left: '10px', fontSize: 18 }} />
-      <GitHubCorners fixed size={56} target="_blank" href="https://github.com/uiwjs/css-filter/" />
-      <Header>
-        <Title>Filter CSS Generator</Title>
-        <Input type="url" spellCheck={false} onChange={(evn) => setImgSrc(evn.target.value || img)} placeholder={img} />
-        {labels.map(({ label, ...reset }, idx) => {
-          return (
-            <Label key={idx}>
-              <span>{label}:</span>
-              <InputRange {...reset} />
-            </Label>
-          );
-        })}
-        <CodeMirror
-          theme="dark"
-          readOnly
-          value={filterCSS}
-          extensions={[css()]}
-          basicSetup={false}
-          style={{ textAlign: 'left' }}
-        />
-        <ImageWrapper>
-          <Image src={imgSrc} alt="Blur an image" $filter={filters.join(' ')} />
-        </ImageWrapper>
-      </Header>
+      <dark-mode permanent light="Light" dark="Dart" style={{ position: 'fixed', top: 9, left: 10, fontSize: 18 }} />
+      <GitHubCorners fixed size={52} target="_blank" href="https://github.com/uiwjs/css-filter/" />
+      <Title>Filter CSS Generator</Title>
+      <Main>
+        <Aside>
+          <Input type="url" spellCheck={false} onChange={(evn) => setImgSrc(evn.target.value || img)} placeholder={img} />
+          {labels.map(({ label, ...reset }, idx) => {
+            return (
+              <Label key={idx}>
+                <span>{label}:</span>
+                <InputRange {...reset} />
+              </Label>
+            );
+          })}
+          <Divider />
+          <CodeMirror
+            // theme="light"
+            theme={state.theme === 'dark' ? 'dark' : 'light'}
+            readOnly
+            value={filterCSS}
+            extensions={[css()]}
+            basicSetup={false}
+            style={{ textAlign: 'left' }}
+          />
+        </Aside>
+        <Article>
+          <ImageWrapper>
+            <Image src={imgSrc} alt="Blur an image" $filter={filters.join(' ')} />
+          </ImageWrapper>
+        </Article>
+      </Main>
     </Wrapper>
   );
 };

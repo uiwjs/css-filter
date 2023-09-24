@@ -52,24 +52,12 @@ const ImageWrapper = styled.div`
 `;
 
 type ImageProps = {
-  $blur?: number;
-  $grayscale?: number;
-  $brightness?: number;
-  $contrast?: number;
-  $sepia?: number;
-  $saturate?: number;
-  $opacity?: number;
-  $invert?: number;
+  $filter?: string;
 };
 
 const Image = styled.img<ImageProps>`
   max-width: 100%;
-  filter: ${({ $blur }) => $blur !== 0 && `blur(${$blur}px)`}
-    ${({ $grayscale }) => $grayscale !== 0 && `grayscale(${$grayscale}%)`} ${({ $sepia }) => $sepia !== 0 && `sepia(${$sepia}%)`}
-    ${({ $saturate }) => $saturate !== 100 && `saturate(${$saturate}%)`}
-    ${({ $opacity }) => $opacity !== 100 && `opacity(${$opacity}%)`} ${({ $invert }) => $invert !== 0 && `invert(${$invert}%)`}
-    ${({ $contrast }) => $contrast !== 100 && `contrast(${$contrast}%)`}
-    ${({ $brightness }) => $brightness !== 100 && `brightness(${$brightness}%)`};
+  filter: ${({ $filter }) => $filter};
 `;
 
 interface Filter {
@@ -203,7 +191,7 @@ const App = () => {
   return (
     <Wrapper>
       <dark-mode permanent light="Light" dark="Dart" style={{ position: 'fixed', top: '6px', left: '10px', fontSize: 18 }} />
-      <GitHubCorners fixed size={56} target="_blank" href="https://uiwjs.github.io/css-filter/" />
+      <GitHubCorners fixed size={56} target="_blank" href="https://github.com/uiwjs/css-filter/" />
       <Header>
         <Title>Filter CSS Generator</Title>
         <Input type="url" spellCheck={false} onChange={(evn) => setImgSrc(evn.target.value || img)} placeholder={img} />
@@ -224,18 +212,7 @@ const App = () => {
           style={{ textAlign: 'left' }}
         />
         <ImageWrapper>
-          <Image
-            src={imgSrc}
-            alt="Blur an image"
-            $grayscale={state.grayscale}
-            $sepia={state.sepia}
-            $blur={state.blur}
-            $brightness={state.brightness}
-            $saturate={state.saturate}
-            $opacity={state.opacity}
-            $contrast={state.contrast}
-            $invert={state.invert}
-          />
+          <Image src={imgSrc} alt="Blur an image" $filter={filters.join(' ')} />
         </ImageWrapper>
       </Header>
     </Wrapper>

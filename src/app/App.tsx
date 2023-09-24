@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import GitHubCorners from '@uiw/react-github-corners';
 import '@wcj/dark-mode';
 import styled from 'styled-components';
@@ -38,43 +38,204 @@ const InputRange = styled.input`
 
 const Label = styled.label`
   margin-top: 1rem;
+  display: flex;
+  > span {
+    width: 90px;
+    text-align: right;
+  }
 `;
 
 const ImageWrapper = styled.div`
-  overflow: hidden;
   border-radius: 0.25rem;
   margin-inline: 1rem;
   margin-top: 2rem;
 `;
 
-const Image = styled.img<{ $filter: number }>`
+type ImageProps = {
+  $blur?: number;
+  $grayscale?: number;
+  $brightness?: number;
+  $contrast?: number;
+  $sepia?: number;
+  $saturate?: number;
+  $opacity?: number;
+  $invert?: number;
+};
+
+const Image = styled.img<ImageProps>`
   max-width: 100%;
-  filter: blur(${(props) => props.$filter}px);
+  filter: ${({ $blur }) => $blur !== 0 && `blur(${$blur}px)`}
+    ${({ $grayscale }) => $grayscale !== 0 && `grayscale(${$grayscale}%)`} ${({ $sepia }) => $sepia !== 0 && `sepia(${$sepia}%)`}
+    ${({ $saturate }) => $saturate !== 100 && `saturate(${$saturate}%)`}
+    ${({ $opacity }) => $opacity !== 100 && `opacity(${$opacity}%)`} ${({ $invert }) => $invert !== 0 && `invert(${$invert}%)`}
+    ${({ $contrast }) => $contrast !== 100 && `contrast(${$contrast}%)`}
+    ${({ $brightness }) => $brightness !== 100 && `brightness(${$brightness}%)`};
 `;
 
+interface Filter {
+  blur?: number;
+  grayscale?: number;
+  brightness?: number;
+  contrast?: number;
+  sepia?: number;
+  saturate?: number;
+  opacity?: number;
+  invert?: number;
+}
+
+function reducer(state: Filter, action: Filter): Filter {
+  return { ...state, ...action };
+}
+
 const App = () => {
-  const [range, setRange] = useState(75);
+  const [state, dispatch] = useReducer(reducer, {
+    blur: 0,
+    grayscale: 0,
+    brightness: 100,
+    contrast: 100,
+    sepia: 0,
+    saturate: 100,
+    opacity: 100,
+    invert: 0,
+  });
   const [imgSrc, setImgSrc] = useState(img);
+  const filters = [
+    state.blur !== 0 ? `blur(${state.blur}px)` : '',
+    state.grayscale !== 0 ? `grayscale(${state.grayscale}%)` : '',
+    state.sepia !== 0 ? `sepia(${state.sepia}%)` : '',
+    state.saturate !== 100 ? `saturate(${state.saturate}%)` : '',
+    state.brightness !== 100 ? `brightness(${state.brightness}%)` : '',
+    state.contrast !== 100 ? `contrast(${state.contrast}%)` : '',
+    state.opacity !== 100 ? `opacity(${state.opacity}%)` : '',
+    state.invert !== 0 ? `invert(${state.invert}%)` : '',
+  ].filter(Boolean);
+  const filterCSS = filters.length ? `img {\n  filter: ${filters.join(' ')};\n}` : '';
+  const labels = [
+    {
+      type: 'range',
+      max: 100,
+      min: 0,
+      label: 'blur',
+      value: state.blur,
+      onChange: (evn: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          blur: Number(evn.target.value),
+        }),
+    },
+    {
+      type: 'range',
+      max: 100,
+      min: 0,
+      label: 'grayscale',
+      value: state.grayscale,
+      onChange: (evn: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          grayscale: Number(evn.target.value),
+        }),
+    },
+    {
+      type: 'range',
+      max: 200,
+      min: 0,
+      label: 'brightness',
+      value: state.brightness,
+      onChange: (evn: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          brightness: Number(evn.target.value),
+        }),
+    },
+    {
+      type: 'range',
+      max: 1000,
+      min: 0,
+      label: 'contrast',
+      value: state.contrast,
+      onChange: (evn: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          contrast: Number(evn.target.value),
+        }),
+    },
+    {
+      type: 'range',
+      max: 100,
+      min: 0,
+      label: 'sepia',
+      value: state.sepia,
+      onChange: (evn: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          sepia: Number(evn.target.value),
+        }),
+    },
+    {
+      type: 'range',
+      max: 1000,
+      min: 0,
+      label: 'saturate',
+      value: state.saturate,
+      onChange: (evn: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          saturate: Number(evn.target.value),
+        }),
+    },
+    {
+      type: 'range',
+      max: 100,
+      min: 0,
+      label: 'opacity',
+      value: state.opacity,
+      onChange: (evn: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          opacity: Number(evn.target.value),
+        }),
+    },
+    {
+      type: 'range',
+      max: 100,
+      min: 0,
+      label: 'invert',
+      value: state.invert,
+      onChange: (evn: React.ChangeEvent<HTMLInputElement>) =>
+        dispatch({
+          invert: Number(evn.target.value),
+        }),
+    },
+  ];
   return (
     <Wrapper>
       <dark-mode permanent light="Light" dark="Dart" style={{ position: 'fixed', top: '6px', left: '10px', fontSize: 18 }} />
       <GitHubCorners fixed size={56} target="_blank" href="https://uiwjs.github.io/css-filter/" />
       <Header>
-        <Title>Blur an image</Title>
+        <Title>Filter CSS Generator</Title>
         <Input type="url" spellCheck={false} onChange={(evn) => setImgSrc(evn.target.value || img)} placeholder={img} />
-        <Label>
-          <InputRange type="range" max={100} min={0} value={range} onChange={(evn) => setRange(Number(evn.target.value))} />
-        </Label>
+        {labels.map(({ label, ...reset }, idx) => {
+          return (
+            <Label key={idx}>
+              <span>{label}:</span>
+              <InputRange {...reset} />
+            </Label>
+          );
+        })}
         <CodeMirror
           theme="dark"
           readOnly
-          value={`img {\n  filter: blur(${range}px);\n}`}
+          value={filterCSS}
           extensions={[css()]}
           basicSetup={false}
           style={{ textAlign: 'left' }}
         />
         <ImageWrapper>
-          <Image src={imgSrc} alt="Blur an image" $filter={range} />
+          <Image
+            src={imgSrc}
+            alt="Blur an image"
+            $grayscale={state.grayscale}
+            $sepia={state.sepia}
+            $blur={state.blur}
+            $brightness={state.brightness}
+            $saturate={state.saturate}
+            $opacity={state.opacity}
+            $contrast={state.contrast}
+            $invert={state.invert}
+          />
         </ImageWrapper>
       </Header>
     </Wrapper>

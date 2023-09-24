@@ -1,0 +1,72 @@
+{
+  "name": "css-filter",
+  "homepage": "https://uiwjs.github.io/css-filter",
+  "version": "1.0.0",
+  "description": "The easiest way to create this effect is... to choose a good image and add some filter: blur().",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "start": "kkt start",
+    "build": "kkt build",
+    "test": "tsbb test --env=jsdom",
+    "coverage": "tsbb test --env=jsdom --coverage --bail",
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uiwjs/css-filter.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@codemirror/lang-css": "^6.2.1",
+    "@uiw/react-codemirror": "^4.21.18",
+    "@uiw/react-copy-to-clipboard": "^4.22.0",
+    "@uiw/react-github-corners": "^1.5.15",
+    "@wcj/dark-mode": "^1.0.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.13",
+    "@types/react-dom": "^18.2.6",
+    "husky": "^8.0.3",
+    "jest-environment-jsdom": "^29.5.0",
+    "kkt": "^7.5.2",
+    "lint-staged": "^14.0.0",
+    "prettier": "^3.0.1",
+    "tsbb": "^4.1.12"
+  },
+  "lint-staged": {
+    "*.{js,jsx,tsx,ts,less,md,json}": [
+      "prettier --write"
+    ]
+  },
+  "jest": {
+    "coverageReporters": [
+      "lcov",
+      "json-summary"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/*.test.{ts,tsx}"
+    ],
+    "collectCoverageFrom": [
+      "<rootDir>/src/app/*.{tsx,ts}"
+    ],
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/?!(.*)"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

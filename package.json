@@ -2,7 +2,7 @@
   "name": "css-filter",
   "homepage": "https://uiwjs.github.io/css-filter",
   "version": "1.0.0",
-  "description": "The easiest way to create this effect is... to choose a good image and add some filter: blur().",
+  "description": "A filter CSS generator that helps you quickly generate filter CSS declarations for your website. It comes with many options and it demonstrates instantly.",
   "private": true,
   "scripts": {
     "prepare": "husky install",

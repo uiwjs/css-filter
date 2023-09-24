@@ -4,7 +4,7 @@
 [![Coverage Badge](https://uiwjs.github.io/css-filter/badges.svg)](https://uiwjs.github.io/css-filter/lcov-report/)
 [![Open in Gitpod](https://shields.io/badge/Open%20in-Gitpod-green?logo=Gitpod)](https://gitpod.io/#https://github.com/uiwjs/css-filter)
 
-The easiest way to create this effect is... to choose a good image and add some [`filter: blur()`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/filter-function/blur).
+A [filter](https://developer.mozilla.org/en-US/docs/Web/CSS/filter) CSS generator that helps you quickly generate filter CSS declarations for your website. It comes with many options and it demonstrates instantly.
 
 https://uiwjs.github.io/css-filter
 

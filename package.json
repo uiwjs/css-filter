@@ -8,8 +8,8 @@
     "prepare": "husky install",
     "start": "kkt start",
     "build": "kkt build",
-    "test": "tsbb test --env=jsdom",
-    "coverage": "tsbb test --env=jsdom --coverage --bail",
+    "test": "tsbb test",
+    "coverage": "tsbb test --coverage --bail",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
   },
   "repository": {
@@ -31,7 +31,6 @@
     "@types/react": "^18.2.13",
     "@types/react-dom": "^18.2.6",
     "husky": "^8.0.3",
-    "jest-environment-jsdom": "^29.5.0",
     "kkt": "^7.5.2",
     "lint-staged": "^14.0.0",
     "prettier": "^3.0.1",

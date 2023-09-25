@@ -20,7 +20,7 @@ const Title = styled.h1`
   border-bottom: 1px solid var(--color-border-default);
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding-left: 40px;
 `;
 
 const Divider = styled.div`
@@ -225,7 +225,7 @@ const App = () => {
   ];
   return (
     <Wrapper>
-      <dark-mode permanent light="Light" dark="Dart" style={{ position: 'fixed', top: 9, left: 10, fontSize: 18 }} />
+      <dark-mode permanent style={{ position: 'fixed', top: 9, left: 10, fontSize: 21 }} />
       <GitHubCorners fixed size={52} target="_blank" href="https://github.com/uiwjs/css-filter/" />
       <Title>Filter CSS Generator</Title>
       <Main>
